@@ -1,58 +1,185 @@
 import React, { useEffect, useState } from "react";
+import DisplaySettingsIcon from '@mui/icons-material/DisplaySettings';
+import { Box, Button, Chip, Divider, Drawer, Grid, IconButton, ListItem, ListItemButton, ListItemIcon, ListItemText } from '@mui/material'; import { ArrowForward } from "@material-ui/icons";
+import { AddPhotoAlternate, ArrowForwardIos, CheckBox, CheckBoxOutlineBlank, CheckBoxOutlineBlankOutlined, ColorizeSharp, RestartAlt } from "@mui/icons-material";
+import { ChromePicker } from "react-color";
+import rgbHex from "rgb-hex";
+import Wallpaper from "../../data/wallpapers.json";
 
-export interface SwitchDarkModeProps {
-  className?: string;
-}
-const SwitchDarkMode: React.FC<SwitchDarkModeProps> = ({ className = "" }) => {
-  const [isDarkMode, setIsDarkMode] = useState(false);
+
+
+const DRAWER_STYLE = {
+  width: "250px",
+  height: "100vh",
+  borderLeft: "1px solid gray",
+  backgroundColor: '#13131d',
+  color: '#6b7280',
+  "& .MuiSvgIcon-root": {
+    color: '#6b7280',
+    width: "24px",
+    height: "24px",
+  },
+  "& span": {
+    fontSize: "16px",
+  },
+};
+
+
+
+
+// export interface SwitchDarkModeProps {
+//   className?: string;
+// }
+// const SwitchDarkMode: React.FC<SwitchDarkModeProps> = ({ className = "" }) => {
+const SwitchDarkMode = () => {
+  // const [cookies, setCookie] = useCookies(["updateThemeFlag"]);
+
+  const [viewSettingDrawer, setViewSettingDrawer] = useState(false);
+  const [viewColorSetDrawer, setViewColorSetDrawer] = useState(false);
+
+  const [newTheme, setNewTheme] = useState({
+    backgroundColor: "#ffffffff",
+    backgroundImage: "",
+    blurMode: false,
+  });
+  const [updateValue, setUpdateValue] = useState(false);
+
+  const [colorPickerColor, setColorPickerColor] = useState("#ffffffff");
+  const [blurMode, setBlurMode] = useState(false);
+  const [uploadImageList, setImageList] = useState([]);
 
   useEffect(() => {
-    if(localStorage.theme === undefined || localStorage.theme === null)
-    {
-      toDark();
-    }
-    else if (
-      localStorage.theme === "dark" ||
-      (!("theme" in localStorage) &&
-        window.matchMedia("(prefers-color-scheme: dark)").matches)
-    ) {
-      toDark();
-    } else {
-      toLight();
+    const theme = JSON.parse(localStorage.getItem("theme"));
+    if (theme) {
+      setColorPickerColor(theme.backgroundColor);
+      setBlurMode(theme.blurMode);
+      setNewTheme({
+        backgroundColor: theme.backgroundColor,
+        backgroundImage: theme.backgroundImage,
+        blurMode: theme.blurMode,
+      });
     }
   }, []);
 
-  const toDark = () => {
-    setIsDarkMode(true);
-    const root = document.querySelector("html");
-    if (!root) return;
-    !root.classList.contains("dark") && root.classList.add("dark");
-    localStorage.theme = "dark";
-  };
+  const upgradeTheme = async (
+    backgroundColor_u,
+    backgroundImage_u,
+    blurMode_u
+  ) => {
+    try {
+      const tempTheme = {
+        backgroundColor: backgroundColor_u,
+        backgroundImage: backgroundImage_u,
+        blurMode: blurMode_u,
+      };
 
-  const toLight = () => {
-    setIsDarkMode(false);
-    const root = document.querySelector("html");
-    if (!root) return;
-    root.classList.remove("dark");
-    localStorage.theme = "light";
-  };
-
-  function _toogleDarkMode() {
-    if (localStorage.theme === "light") {
-      toDark();
-    } else {
-      toLight();
+      localStorage.setItem("theme", JSON.stringify(tempTheme));
+      // setCookie(
+      //   "updateThemeFlag",
+      //   cookies.updateThemeFlag == "false" ? "true" : "false"
+      // );
+      setNewTheme(tempTheme);
+      setUpdateValue(!updateValue);
+    } catch (e) {
+      console.log(">>>>>>>>>>>>Exception", e);
     }
-  }
+  };
+
+  const handleUploadClick = (event) => {
+    // try {
+    //   var file = event.target.files[0];
+    //   const reader = new FileReader();
+    //   var url = reader.readAsDataURL(file);
+
+    //   reader.onloadend = function (e) {
+    //     var image = new Image();
+    //     //Set the Base64 string return from FileReader as source.
+    //     image.src = e.target.result;
+
+    //     //Validate the File Height and Width.
+    //     image.onload = function () {
+    //       var height = this.height;
+    //       var width = this.width;
+    //       // if (height > 100 || width > 100)
+    //       console.log(height, width);
+    //     };
+
+    //     let tempImageList = [...uploadImageList];
+    //     if (!tempImageList.find((item) => item == image.src))
+    //       tempImageList.push(image.src);
+    //     setImageList(tempImageList);
+
+    //     upgradeTheme(
+    //       newTheme.backgroundColor,
+    //       image.src,
+    //       newTheme.blurMode
+    //     );
+    //     //console.log(">>>>>>>>>image", image.src, e.target);
+    //   };
+    // } catch (e) {
+    //   console.log(">>>>>>>>>>>>>Exception", e);
+    // }
+  };
+
+  // const [isDarkMode, setIsDarkMode] = useState(false);
+
+  // useEffect(() => {
+  //   if(localStorage.theme === undefined || localStorage.theme === null)
+  //   {
+  //     toDark();
+  //   }
+  //   else if (
+  //     localStorage.theme === "dark" ||
+  //     (!("theme" in localStorage) &&
+  //       window.matchMedia("(prefers-color-scheme: dark)").matches)
+  //   ) {
+  //     toDark();
+  //   } else {
+  //     toLight();
+  //   }
+  // }, []);
+
+  // const toDark = () => {
+  //   setIsDarkMode(true);
+  //   const root = document.querySelector("html");
+  //   if (!root) return;
+  //   !root.classList.contains("dark") && root.classList.add("dark");
+  //   localStorage.theme = "dark";
+  // };
+
+  // const toLight = () => {
+  //   setIsDarkMode(false);
+  //   const root = document.querySelector("html");
+  //   if (!root) return;
+  //   root.classList.remove("dark");
+  //   localStorage.theme = "light";
+  // };
+
+  // function _toogleDarkMode() {
+  //   if (localStorage.theme === "light") {
+  //     toDark();
+  //   } else {
+  //     toLight();
+  //   }
+  // }
 
   return (
-    <button
-      onClick={_toogleDarkMode}
-      // className={`text-2xl md:text-3xl w-12 h-12 rounded-full text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 focus:outline-none flex items-center justify-center ${className}`}
-    >
-      S2
-      {/* <span className="sr-only">Enable dark mode1</span>
+    <Box>
+      <IconButton
+        onClick={() => setViewSettingDrawer(true)}
+        // onClick={_toogleDarkMode}
+        // className={`text-2xl md:text-3xl w-12 h-12 rounded-full text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 focus:outline-none flex items-center justify-center ${className}`}
+        sx={{
+          color: '#6b7280',
+          width: '48px',
+          height: '48px',
+        }}
+      >
+        <DisplaySettingsIcon sx={{
+          width: '28px',
+          height: '28px',
+        }} />
+        {/* <span className="sr-only">Enable dark mode1</span>
       {isDarkMode ? (
         <svg
           width="24"
@@ -93,7 +220,334 @@ const SwitchDarkMode: React.FC<SwitchDarkModeProps> = ({ className = "" }) => {
           />
         </svg>
       )} */}
-    </button>
+      </IconButton>
+      <Drawer
+        anchor="right"
+        open={viewSettingDrawer}
+        onClose={() => setViewSettingDrawer(false)}
+      >
+        <Box sx={DRAWER_STYLE}>
+          <ListItem disablePadding>
+            <ListItemButton
+              onClick={() => setViewSettingDrawer(false)}
+            >
+              <ListItemText
+                primary={"Theme Setting"}
+                sx={{
+                  textTransform: "uppercase",
+                  "& span": {
+                    fontSize: "18px",
+                    fontWeight: "700",
+                  },
+                }}
+              />
+              <ListItemIcon
+                sx={{
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "right",
+                }}
+              >
+                <ArrowForward />
+              </ListItemIcon>
+            </ListItemButton>
+          </ListItem>
+          <Divider sx={{
+            borderColor: 'gray',
+          }} />
+          <ListItem disablePadding>
+            <ListItemButton>
+              <ListItemIcon>
+                <AddPhotoAlternate />
+              </ListItemIcon>
+              <ListItemText primary={"Upload image"} />
+              <input
+                accept="image/*"
+                // className={classes.input}
+                style={{
+                  opacity: 0,
+                  position: "absolute",
+                  width: "90%",
+                }}
+                id="contained-button-file"
+                // multiple
+                type="file"
+                onChange={handleUploadClick}
+              />
+            </ListItemButton>
+          </ListItem>
+          <ListItem disablePadding>
+            <ListItemButton
+              onClick={() => setViewColorSetDrawer(true)}
+            >
+              <ListItemIcon>
+                <ColorizeSharp />
+              </ListItemIcon>
+              <ListItemText primary={"Set a color"} />
+            </ListItemButton>
+          </ListItem>
+          <ListItem disablePadding>
+            <ListItemButton
+              onClick={() => upgradeTheme("#ffffffff", "", false)}
+            >
+              <ListItemIcon>
+                <RestartAlt />
+              </ListItemIcon>
+              <ListItemText primary={"Reset to default"} />
+            </ListItemButton>
+          </ListItem>
+          <ListItem disablePadding>
+            <ListItemButton
+              onClick={() =>
+                upgradeTheme(
+                  newTheme.backgroundColor,
+                  newTheme.backgroundImage,
+                  !newTheme.blurMode
+                )
+              }
+            >
+              <ListItemIcon>
+                {newTheme.blurMode ? (
+                  <CheckBox />
+                ) : (
+                  <CheckBoxOutlineBlankOutlined />
+                )}
+              </ListItemIcon>
+              <ListItemText primary={"Blurred"} />
+            </ListItemButton>
+          </ListItem>
+          <ListItem>
+            <Box sx={{
+              position: 'relative',
+              width: '100%',
+              height: '28px',
+            }}>
+
+              <Divider sx={{
+                width: '100%',
+                position: 'absolute',
+                top: '12px',
+                borderColor: 'gray',
+              }} />
+              <Box sx={{
+                position: 'absolute',
+                width: '100%',
+                display: 'flex',
+                flexDirection: 'row',
+                justifyContent: 'center',
+              }}>
+                <Chip label="Default background"
+                  sx={{
+                    height: '28px',
+                    color: 'white',
+                    backgroundColor: '#13131d',
+                    '& .MuiChip-label': {
+                      fontSize: '11px',
+                    }
+
+                  }} />
+              </Box>
+            </Box>
+          </ListItem>
+          <Grid
+            container
+            spacing={1}
+            sx={{
+              padding: "10px",
+            }}
+          >
+            {Wallpaper?.length > 0 &&
+              Wallpaper.map((item) => (
+                <Grid item xs={4}>
+                  <Button
+                    onClick={() =>
+                      upgradeTheme(
+                        "#ffffffff",
+                        item.imageUrl,
+                        newTheme.blurMode
+                      )
+                    }
+                    sx={{
+                      padding: "0",
+                      margin: "0",
+                    }}
+                  >
+                    <img
+                      alt=""
+                      src={item.thumbnail}
+                      style={{
+                        border: item.imageUrl === newTheme.backgroundImage ?
+                          "3px solid white" : "1px solid gray",
+                      }}
+                    />
+                  </Button>
+                </Grid>
+              ))}
+          </Grid>
+          <ListItem>
+            <Box sx={{
+              position: 'relative',
+              width: '100%',
+              height: '28px',
+            }}>
+              <Divider sx={{
+                width: '100%',
+                position: 'absolute',
+                top: '12px',
+                borderColor: 'gray'
+              }} />
+              <Box sx={{
+                position: 'absolute',
+                width: '100%',
+                display: 'flex',
+                flexDirection: 'row',
+                justifyContent: 'center',
+              }}>
+                <Chip label="Uploaded background"
+                  sx={{
+                    height: '28px',
+                    color: 'white',
+                    backgroundColor: '#13131d',
+                    '& .MuiChip-label': {
+                      fontSize: '11px',
+                    }
+
+                  }} />
+              </Box>
+            </Box>
+          </ListItem>
+          <Grid
+            container
+            spacing={1}
+            sx={{
+              padding: "10px",
+            }}
+          >
+            {uploadImageList.length > 0 &&
+              uploadImageList.map((item) => (
+                <Grid item xs={4}>
+                  <Button
+                    onClick={() =>
+                      upgradeTheme(
+                        "#ffffffff",
+                        item,
+                        newTheme.blurMode
+                      )
+                    }
+                    sx={{
+                      padding: "0",
+                      margin: "0",
+                    }}
+                  >
+                    <img
+                      alt=""
+                      src={item}
+                      style={{
+                        border: "1px solid gray",
+                        width: "70px",
+                        height: "70px",
+                      }}
+                    />
+                  </Button>
+                </Grid>
+              ))}
+          </Grid>
+        </Box>
+      </Drawer>
+      <Drawer
+        anchor="right"
+        open={viewColorSetDrawer}
+        onClose={() => setViewColorSetDrawer(false)}
+      >
+        <Box sx={DRAWER_STYLE}>
+          <ListItem disablePadding>
+            <ListItemButton
+              onClick={() => setViewColorSetDrawer(false)}
+            >
+              <ListItemText
+                primary={"Set a color"}
+                sx={{
+                  "& span": {
+                    fontSize: "18px",
+                    fontWeight: "700",
+                  },
+                }}
+              />
+              <ListItemIcon
+                sx={{
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "right",
+                }}
+              >
+                <ArrowForward />
+              </ListItemIcon>
+            </ListItemButton>
+          </ListItem>
+          <Divider sx={{
+            borderColor: 'gray',
+          }} />
+          <ListItem>
+            <ChromePicker
+              color={colorPickerColor}
+              onChangeComplete={(c) =>
+                setColorPickerColor(
+                  "#" +
+                  rgbHex(
+                    c.rgb.r,
+                    c.rgb.g,
+                    c.rgb.b,
+                    c.rgb.a
+                  )
+                )
+              }
+            />
+          </ListItem>
+          <ListItem>
+            <Box sx={{
+              position: 'relative',
+              width: '100%',
+              height: '50px',
+              border: '1px solid gray',
+            }}>
+              <Box
+                sx={{
+                  position: 'absolute',
+                  width: '100%',
+                  height: '100%',
+                  backgroundImage: 'url(./images/bg/bg-transparent.jpg)',
+                }}
+              />
+              <Box
+                sx={{
+                  position: 'absolute',
+                  width: '100%',
+                  height: '100%',
+                  backgroundColor: colorPickerColor,
+                }}
+              />
+            </Box>
+          </ListItem>
+          <ListItem>
+            <ListItemButton
+              onClick={() =>
+                upgradeTheme(colorPickerColor, "", false)
+              }
+              sx={{
+                border: "1px solid white",
+              }}
+            >
+              <ListItemText
+                primary={"Use this color"}
+                sx={{
+                  textAlign: "center",
+                }}
+              />
+            </ListItemButton>
+          </ListItem>
+        </Box>
+      </Drawer>
+    </Box>
   );
 };
 
