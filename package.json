@@ -38,6 +38,7 @@
     "emoji-picker-react": "^4.4.7",
     "fs": "^0.0.1-security",
     "fs-react-contenteditable": "^1.0.3",
+    "hsl-to-hex": "^1.0.0",
     "https-browserify": "^1.0.0",
     "jwt-decode": "^3.1.2",
     "md5": "^2.3.0",

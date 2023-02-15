@@ -5,6 +5,7 @@ import { AddPhotoAlternate, ArrowForwardIos, CheckBox, CheckBoxOutlineBlank, Che
 import { ChromePicker } from "react-color";
 import { useCookies, CookiesProvider } from "react-cookie";
 import rgbHex from "rgb-hex";
+import hslHex from 'hsl-to-hex';
 import Wallpaper from "../../data/wallpapers.json";
 
 
@@ -48,6 +49,42 @@ const SwitchDarkMode = () => {
   const [colorPickerColor, setColorPickerColor] = useState("#ffffffff");
   const [blurMode, setBlurMode] = useState(false);
   const [uploadImageList, setImageList] = useState([]);
+
+  const [newColor, setNewColor] = useState({
+    hue: 0,
+    saturation: 100,
+    lightness: 50,
+    alpha: 1,
+  })
+
+  const onChangeColor = (hue, saturation, lightness, alpha) => {
+    setNewColor({
+      hue: parseInt(hue === -1 ? newColor.hue : hue),
+      saturation: parseInt(saturation === -1 ? newColor.saturation : saturation),
+      lightness: parseInt(lightness === -1 ? newColor.lightness : lightness),
+      alpha: parseFloat(alpha === -1 ? newColor.alpha : alpha),
+    });
+
+    console.log('onChangeColor log - 1: ',
+      hslHex(
+        parseInt(hue === -1 ? newColor.hue : hue),
+        parseInt(saturation === -1 ? newColor.saturation : saturation),
+        parseInt(lightness === -1 ? newColor.lightness : lightness),
+      )
+      +
+      Math.floor(parseFloat(alpha === -1 ? newColor.alpha : alpha) * 255).toString(16)
+    );
+
+    setColorPickerColor(
+      hslHex(
+        parseInt(hue === -1 ? newColor.hue : hue),
+        parseInt(saturation === -1 ? newColor.saturation : saturation),
+        parseInt(lightness === -1 ? newColor.lightness : lightness),
+      )
+      +
+      Math.floor(parseFloat(alpha === -1 ? newColor.alpha : alpha) * 255).toString(16)
+    );
+  }
 
   useEffect(() => {
     const theme = JSON.parse(localStorage.getItem("website-theme"));
@@ -489,7 +526,112 @@ const SwitchDarkMode = () => {
             borderColor: 'gray',
           }} />
           <ListItem>
-            <ChromePicker
+            <Box className="slider-group"
+              sx={{
+                width: '100%',
+                '& .slider-container': {
+                  height: '40px',
+                  width: '100%',
+                  padding: '10px 0',
+                  marginTop: '15px',
+                  '& input[type=range]': {
+                    width: '100%',
+                    '-webkit-appearance': 'none',
+                    height: '16px',
+                    borderRadius: '8px',
+                    border: '1px solid lightgrey',
+                    '&:focus': {
+                      outline: 'none'
+                    },
+                  },
+                  '& input[type=range]::-webkit-slider-thumb': {
+                    boxShadow: '0 1px 1px 1px rgba(0,0,0,.2)',
+                    border: '1px solid lightgrey',
+                    height: '20px',
+                    width: '20px',
+                    borderRadius: '50px',
+                    background: '#ffffff',
+                    cursor: 'pointer',
+                    '-webkit-appearance': 'none',
+                    marginTop: '0px',
+                  },
+                  '& input[type=number]': {
+                    position: 'absolute',
+                    margin: '-5px 0',
+                    padding: '0',
+                    right: '20px',
+                    width: '60px',
+                    height: '26px',
+                    textAlign: 'center',
+                    '&:focus': {
+                      outline: 'none'
+                    },
+                  },
+                  '& label': {
+                    width: '10%',
+                    height: '24px',
+                    lineHeight: '12px',
+                    textAlign: 'center',
+                    textTransform: 'capitalize',
+                    '&:first-letter': {
+                      // fontWeight: 'bold',
+                    },
+                  },
+                  '& input[type=range], label': {
+                    float: 'left',
+                  },
+                }
+              }}>
+              <Box className="slider-container">
+                <label>hue</label>
+                <input type="number" id="number-h" min="0" max="360" step="1"
+                  value={newColor.hue}
+                  onChange={e => onChangeColor(e.target.value, -1, -1, -1)} />
+                <input type="range" id="slider-h" min="0" max="360" step="1"
+                  style={{
+                    background: '-webkit-linear-gradient(left, rgb(255, 0, 0), rgb(255, 85, 0), rgb(255, 170, 0), rgb(255, 255, 0), rgb(170, 255, 0), rgb(85, 255, 0), rgb(0, 255, 0), rgb(0, 255, 85), rgb(0, 255, 170), rgb(0, 255, 255), rgb(0, 170, 255), rgb(0, 85, 255), rgb(0, 0, 255), rgb(85, 0, 255), rgb(170, 0, 255), rgb(255, 0, 255), rgb(255, 0, 170), rgb(255, 0, 85), rgb(255, 0, 0))',
+                  }}
+                  value={newColor.hue}
+                  onChange={e => onChangeColor(e.target.value, -1, -1, -1)} />
+              </Box>
+              <Box className="slider-container">
+                <label>saturation</label>
+                <input type="number" id="number-s" min="0" max="100" step="1"
+                  value={newColor.saturation}
+                  onChange={e => onChangeColor(-1, e.target.value, -1, -1)} />
+                <input type="range" id="slider-s" min="0" max="100" step="1"
+                  style={{
+                    background: `-webkit-linear-gradient(left, rgb(128, 128, 128), hsl(${newColor.hue}, 100%, 50%))`,
+                  }}
+                  value={newColor.saturation}
+                  onChange={e => onChangeColor(-1, e.target.value, -1, -1)} />
+              </Box>
+              <Box className="slider-container">
+                <label>lightness</label>
+                <input type="number" id="number-l" min="0" max="100" step="1"
+                  value={newColor.lightness}
+                  onChange={e => onChangeColor(-1, -1, e.target.value, -1)} />
+                <input type="range" id="slider-l" min="0" max="100" step="1"
+                  style={{
+                    background: `-webkit-linear-gradient(left, rgb(0, 0, 0), hsl(${newColor.hue}, 100%, 50%), rgb(255, 255, 255))`,
+                  }}
+                  value={newColor.lightness}
+                  onChange={e => onChangeColor(-1, -1, e.target.value, -1)} />
+              </Box>
+              <Box className="slider-container">
+                <label>alpha</label>
+                <input type="number" id="number-a" min="0" max="1" step="0.05"
+                  value={newColor.alpha}
+                  onChange={e => onChangeColor(-1, -1, -1, e.target.value)} />
+                <input type="range" id="slider-a" min="0" max="1" step="0.05"
+                  style={{
+                    background: `-webkit-linear-gradient(left, hsla(${newColor.hue}, 100%, 50%, 0), hsl(${newColor.hue}, 100%, 50%))`,
+                  }}
+                  value={newColor.alpha}
+                  onChange={e => onChangeColor(-1, -1, -1, e.target.value)} />
+              </Box>
+            </Box>
+            {/* <ChromePicker
               color={colorPickerColor}
               onChangeComplete={(c) =>
                 setColorPickerColor(
@@ -502,7 +644,7 @@ const SwitchDarkMode = () => {
                   )
                 )
               }
-            />
+            /> */}
           </ListItem>
           <ListItem>
             <Box sx={{
@@ -547,8 +689,8 @@ const SwitchDarkMode = () => {
             </ListItemButton>
           </ListItem>
         </Box>
-      </Drawer>
-    </Box>
+      </Drawer >
+    </Box >
   );
 };
 
