@@ -3,6 +3,7 @@ import DisplaySettingsIcon from '@mui/icons-material/DisplaySettings';
 import { Box, Button, Chip, Divider, Drawer, Grid, IconButton, ListItem, ListItemButton, ListItemIcon, ListItemText } from '@mui/material'; import { ArrowForward } from "@material-ui/icons";
 import { AddPhotoAlternate, ArrowForwardIos, CheckBox, CheckBoxOutlineBlank, CheckBoxOutlineBlankOutlined, ColorizeSharp, RestartAlt } from "@mui/icons-material";
 import { ChromePicker } from "react-color";
+import { useCookies, CookiesProvider } from "react-cookie";
 import rgbHex from "rgb-hex";
 import Wallpaper from "../../data/wallpapers.json";
 
@@ -32,7 +33,7 @@ const DRAWER_STYLE = {
 // }
 // const SwitchDarkMode: React.FC<SwitchDarkModeProps> = ({ className = "" }) => {
 const SwitchDarkMode = () => {
-  // const [cookies, setCookie] = useCookies(["updateThemeFlag"]);
+  const [cookies, setCookie] = useCookies(["updateThemeFlag"]);
 
   const [viewSettingDrawer, setViewSettingDrawer] = useState(false);
   const [viewColorSetDrawer, setViewColorSetDrawer] = useState(false);
@@ -49,7 +50,7 @@ const SwitchDarkMode = () => {
   const [uploadImageList, setImageList] = useState([]);
 
   useEffect(() => {
-    const theme = JSON.parse(localStorage.getItem("theme"));
+    const theme = JSON.parse(localStorage.getItem("website-theme"));
     if (theme) {
       setColorPickerColor(theme.backgroundColor);
       setBlurMode(theme.blurMode);
@@ -73,11 +74,11 @@ const SwitchDarkMode = () => {
         blurMode: blurMode_u,
       };
 
-      localStorage.setItem("theme", JSON.stringify(tempTheme));
-      // setCookie(
-      //   "updateThemeFlag",
-      //   cookies.updateThemeFlag == "false" ? "true" : "false"
-      // );
+      localStorage.setItem("website-theme", JSON.stringify(tempTheme));
+      setCookie(
+        "updateThemeFlag",
+        cookies.updateThemeFlag == "false" ? "true" : "false"
+      );
       setNewTheme(tempTheme);
       setUpdateValue(!updateValue);
     } catch (e) {

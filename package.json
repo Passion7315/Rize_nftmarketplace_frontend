@@ -51,6 +51,7 @@
     "react-app-rewired": "^2.2.1",
     "react-color": "^2.19.3",
     "react-contenteditable": "^3.3.6",
+    "react-cookie": "^4.1.1",
     "react-datetime-picker": "^4.2.0",
     "react-dom": "^18.2.0",
     "react-helmet": "^6.1.0",
