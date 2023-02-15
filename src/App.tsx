@@ -8,7 +8,9 @@ function App() {
   const [currentTheme, setCurrentTheme] = useState({
     backgroundColor: '#13131d',
     backgroundImage: '',
-    blurMode: false,
+    blurMode: false,    
+    selectedUploadedImageIndex: -1,
+    uploadedImages: [],
   });
 
   const [cookies, setCookie] = useCookies(["updateThemeFlag"]);
@@ -39,7 +41,9 @@ function App() {
       <div
         style={{
           backgroundColor: currentTheme.backgroundColor,
-          backgroundImage: `url("${currentTheme.backgroundImage}")`,
+          backgroundImage: currentTheme.selectedUploadedImageIndex === -1 ?
+            `url("${currentTheme.backgroundImage}")` : 
+            `url("${currentTheme.uploadedImages[currentTheme.selectedUploadedImageIndex]}")`,
           backgroundSize: "cover",
           backgroundPosition: "center",
           width: "calc(100vw + 30px)",
