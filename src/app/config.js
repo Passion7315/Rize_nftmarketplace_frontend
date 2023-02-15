@@ -1,8 +1,8 @@
 const devnet = true;
 export const config = {
-    socketUrl: "http://192.168.123.67:5000", 
-    baseUrl: "http://192.168.123.67:5000/api/",
-    API_URL: "http://192.168.123.67:5000/",
+    socketUrl: "http://192.168.123.66:5000", 
+    baseUrl: "http://192.168.123.66:5000/api/",
+    API_URL: "http://192.168.123.66:5000/",
     RPC_URL: devnet ? 'https://s-0.devnet-1.coreum.dev/' : 'https://rpc-test.coreum.hexskrt.net/',
     REST_URL: devnet ? 'https://s-0.devnet-1.coreum.dev/rest/' : 'https://api-test.coreum.hexskrt.net/',
     DATA_LAYER: devnet ? '' : '',
@@ -16,6 +16,13 @@ export const config = {
     COIN_GECKOID: devnet ? "coreum" : 'unknown',
     PREFIX: devnet ? 'devcore' : 'testcore',
     AVG_GAS_STEP: 0.005,
+
+    MARKETPLACE: 'devcore1xryveqc63z0l2q6h4a3h0c02ftscwdlm0f2elhngczgau9lefpmqzn69lq',
+    CW721_CONTRACT: 'devcore...',
+    CW721_OWNER: 'devcore...',
+    CW20_CONTRACT: 'devcore143gjvxqvea69v0hqp2p6wtz386hhgdn06uw7xntyhleahaunjkqs0jx6pc',
+    COLLECTION_CODE_ID: 42,
+    CW721_CODE_ID: 41
 }
 
 export const chainConfig = {
@@ -72,5 +79,3 @@ export const CATEGORIES = [
     { value: 3, text: "Sports" },
     { value: 4, text: "Photography" }
   ];
-
-  
